@@ -101,6 +101,30 @@ server.put("/api/users/:id", (req, res) => {
 });
 
 // DELETE /api/users/:id
+server.delete("/api/users/:id", (req, res) => {
+  const id = req.params.id;
+
+  db.remove(id)
+    .then(removeUser => {
+      if (removeUser) {
+        res.status(201).json({
+          success: true,
+          message: `id ${id} has been deleted`
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: `DELETE could not find ${id}`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        success: false,
+        message: `DELETE is not working!`
+      });
+    });
+});
 
 // server.listen
 const PORT = 8000;
