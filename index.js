@@ -6,8 +6,16 @@ const express = require("express");
 const server = express();
 
 // middleware
+server.use(express.json());
 
 // route handlers
+
+server.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Welcome to NodeJS"
+  });
+});
 
 // GET /api/users
 
