@@ -93,31 +93,71 @@ server.post("/api/users", (req, res) => {
   }
 });
 
-// PUT /api/users/:id
+// PUT /api/users/:id ~ MVP
+
 server.put("/api/users/:id", (req, res) => {
   const id = req.params.id;
   const changeInfo = req.body;
 
-  db.update(id, changeInfo)
-    .then(changeInfo => {
-      if (changeInfo) {
-        res.status(200).json({
-          success: true,
-          changeInfo
-        });
-      } else {
+  db.findById(id)
+    .then(user => {
+      if (!user) {
+        // status 404
         res.status(404).json({
           success: false,
-          message: `Cannot update id ${id}`
+          message: `That user with id ${id} does not exist on this server`
         });
+      } else if (!changeInfo.name || !changeInfo.bio) {
+        // status 400
+        res.status(400).json({
+          success: false,
+          message: `Please provide name and bio for user id ${id}`
+        });
+      } else {
+        // status 200 and 500
+        db.update(id, changeInfo)
+          .then(changeInfo => {
+            res.status(200).json({
+              success: true,
+              id,
+              changeInfo
+            });
+          })
+          .catch(err => {
+            res.status(500).json({
+              success: false,
+              message: `Unable to update: ${err}`
+            });
+          });
       }
     })
     .catch(err => {
       res.status(500).json({
         success: false,
-        message: `Unable to update: ${err}`
+        message: `ERROR`
       });
     });
+
+  // db.update(id, changeInfo)
+  //   .then(changeInfo => {
+  //     if (changeInfo) {
+  //       res.status(200).json({
+  //         success: true,
+  //         changeInfo
+  //       });
+  //     } else {
+  //       res.status(404).json({
+  //         success: false,
+  //         message: `Cannot update id ${id}`
+  //       });
+  //     }
+  //   })
+  //   .catch(err => {
+  //     res.status(500).json({
+  //       success: false,
+  //       message: `Unable to update: ${err}`
+  //     });
+  //   });
 });
 
 // DELETE /api/users/:id ~ MVP
@@ -147,7 +187,7 @@ server.delete("/api/users/:id", (req, res) => {
 });
 
 // server.listen
-const PORT = 6000;
+const PORT = 8000;
 server.listen(PORT, () => {
   console.log(`\n=== Server is listening on port ${PORT} ===\n`);
 });
