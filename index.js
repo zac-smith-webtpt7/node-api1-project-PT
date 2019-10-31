@@ -19,7 +19,7 @@ server.get("/", (req, res) => {
   });
 });
 
-// GET /api/users
+// GET /api/users ~ MVP
 
 server.get("/api/users", (req, res) => {
   db.find()
@@ -37,7 +37,7 @@ server.get("/api/users", (req, res) => {
     });
 });
 
-// GET /api/users/:id
+// GET /api/users/:id ~ MVP
 server.get("/api/users/:id", (req, res) => {
   const id = req.params.id;
   db.findById(id)
@@ -65,19 +65,27 @@ server.get("/api/users/:id", (req, res) => {
 // POST /api/users
 server.post("/api/users", (req, res) => {
   const newUser = req.body;
-  db.insert(newUser)
-    .then(user => {
-      res.status(201).json({
-        success: true,
-        user
-      });
-    })
-    .catch(err => {
-      res.status(500).json({
-        success: false,
-        message: `Unable to insert new user: ${err}`
-      });
+
+  if (!newUser.name || !newUser.bio) {
+    res.status(400).json({
+      success: false,
+      message: `Please provide name and bio for the user`
     });
+  } else {
+    db.insert(newUser)
+      .then(user => {
+        res.status(201).json({
+          success: true,
+          user
+        });
+      })
+      .catch(err => {
+        res.status(500).json({
+          success: false,
+          message: `Unable to insert new user: ${err}`
+        });
+      });
+  }
 });
 
 // PUT /api/users/:id
@@ -107,7 +115,7 @@ server.put("/api/users/:id", (req, res) => {
     });
 });
 
-// DELETE /api/users/:id
+// DELETE /api/users/:id ~ MVP
 server.delete("/api/users/:id", (req, res) => {
   const id = req.params.id;
 
