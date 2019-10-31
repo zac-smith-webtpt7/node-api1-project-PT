@@ -94,7 +94,6 @@ server.post("/api/users", (req, res) => {
 });
 
 // PUT /api/users/:id ~ MVP
-
 server.put("/api/users/:id", (req, res) => {
   const id = req.params.id;
   const changeInfo = req.body;
@@ -137,6 +136,8 @@ server.put("/api/users/:id", (req, res) => {
         message: `ERROR`
       });
     });
+
+  // Does not contain full MVP
 
   // db.update(id, changeInfo)
   //   .then(changeInfo => {
