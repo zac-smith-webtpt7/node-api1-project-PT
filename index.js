@@ -2,6 +2,8 @@
 
 const express = require("express");
 
+const db = require("./data/db.js");
+
 // create a server
 const server = express();
 
@@ -19,7 +21,39 @@ server.get("/", (req, res) => {
 
 // GET /api/users
 
+server.get("/api/users", (req, res) => {
+  db.find()
+    .then(data => {
+      res.status(200).json({
+        success: true,
+        data
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        success: false,
+        message: "Unable to locate /GET/api/users"
+      });
+    });
+});
+
 // GET /api/users/:id
+server.get("/api/users/:id", (req, res) => {
+  const id = req.params.id;
+  db.findById(id)
+    .then(id => {
+      res.status(200).json({
+        success: true,
+        id
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        success: false,
+        message: `Unable to locate user with id ${id}`
+      });
+    });
+});
 
 // POST /api/users
 
