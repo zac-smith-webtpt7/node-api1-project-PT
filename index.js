@@ -1,6 +1,7 @@
 // implement your API here
 
 const express = require("express");
+const helmet = require("helmet");
 
 const db = require("./data/db.js");
 
@@ -8,7 +9,9 @@ const db = require("./data/db.js");
 const server = express();
 
 // middleware
+
 server.use(express.json());
+server.use(helmet());
 
 // route handlers
 
@@ -62,9 +65,10 @@ server.get("/api/users/:id", (req, res) => {
     });
 });
 
-// POST /api/users
+// POST /api/users ~ MVP
 server.post("/api/users", (req, res) => {
   const newUser = req.body;
+  const { id, name, bio } = req.body;
 
   if (!newUser.name || !newUser.bio) {
     res.status(400).json({
@@ -76,7 +80,8 @@ server.post("/api/users", (req, res) => {
       .then(user => {
         res.status(201).json({
           success: true,
-          user
+          user,
+          name
         });
       })
       .catch(err => {
@@ -122,7 +127,7 @@ server.delete("/api/users/:id", (req, res) => {
   db.remove(id)
     .then(removeUser => {
       if (removeUser) {
-        res.status(201).json({
+        res.status(200).json({
           success: true,
           message: `id ${id} has been deleted`
         });
@@ -142,7 +147,7 @@ server.delete("/api/users/:id", (req, res) => {
 });
 
 // server.listen
-const PORT = 8000;
+const PORT = 6000;
 server.listen(PORT, () => {
   console.log(`\n=== Server is listening on port ${PORT} ===\n`);
 });
