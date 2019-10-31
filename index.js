@@ -74,6 +74,31 @@ server.post("/api/users", (req, res) => {
 });
 
 // PUT /api/users/:id
+server.put("/api/users/:id", (req, res) => {
+  const id = req.params.id;
+  const changeInfo = req.body;
+
+  db.update(id, changeInfo)
+    .then(changeInfo => {
+      if (changeInfo) {
+        res.status(200).json({
+          success: true,
+          changeInfo
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: `Cannot update id ${id}`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        success: false,
+        message: `Unable to update: ${err}`
+      });
+    });
+});
 
 // DELETE /api/users/:id
 
