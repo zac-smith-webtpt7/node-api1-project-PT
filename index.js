@@ -121,14 +121,14 @@ server.delete("/api/users/:id", (req, res) => {
       } else {
         res.status(404).json({
           success: false,
-          message: `DELETE could not find ${id}`
+          message: `The user with id ${id} does not exist`
         });
       }
     })
     .catch(err => {
       res.status(500).json({
         success: false,
-        message: `DELETE is not working!`
+        message: `The user could not be removed. DELETE is not working!`
       });
     });
 });
