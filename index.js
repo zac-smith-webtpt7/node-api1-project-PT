@@ -32,7 +32,7 @@ server.get("/api/users", (req, res) => {
     .catch(err => {
       res.status(500).json({
         success: false,
-        message: `Unable to locate /GET/api/users: ${err}`
+        message: `The users information could not be retrieved. /GET/api/users: ${err}`
       });
     });
 });
@@ -42,15 +42,22 @@ server.get("/api/users/:id", (req, res) => {
   const id = req.params.id;
   db.findById(id)
     .then(user => {
-      res.status(200).json({
-        success: true,
-        user
-      });
+      if (user) {
+        res.status(200).json({
+          success: true,
+          user
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: `he user with id ${id} does not exist`
+        });
+      }
     })
     .catch(err => {
       res.status(500).json({
         success: false,
-        message: `Unable to locate user with id ${id}`
+        message: `The user with id ${id} information could not be retrieved`
       });
     });
 });
