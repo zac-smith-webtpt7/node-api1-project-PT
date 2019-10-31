@@ -32,7 +32,7 @@ server.get("/api/users", (req, res) => {
     .catch(err => {
       res.status(500).json({
         success: false,
-        message: "Unable to locate /GET/api/users"
+        message: `Unable to locate /GET/api/users: ${err}`
       });
     });
 });
@@ -41,10 +41,10 @@ server.get("/api/users", (req, res) => {
 server.get("/api/users/:id", (req, res) => {
   const id = req.params.id;
   db.findById(id)
-    .then(id => {
+    .then(user => {
       res.status(200).json({
         success: true,
-        id
+        user
       });
     })
     .catch(err => {
@@ -56,6 +56,22 @@ server.get("/api/users/:id", (req, res) => {
 });
 
 // POST /api/users
+server.post("/api/users", (req, res) => {
+  const newUser = req.body;
+  db.insert(newUser)
+    .then(user => {
+      res.status(201).json({
+        success: true,
+        user
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        success: false,
+        message: `Unable to insert new user: ${err}`
+      });
+    });
+});
 
 // PUT /api/users/:id
 
